@@ -1,0 +1,45 @@
+---
+# tasks file for ansible-role-nginx_controller_location
+
+- name: Fail if required variables are not defined
+  assert:
+    that: ("{{ item }} is defined") and ("{{ item }} | length > 0")
+  loop:
+    - nginx_controller_api_version
+    - nginx_controller_fqdn
+    - nginx_controller_auth_token
+    - nginx_controller_location.metadata.name
+    - nginx_controller_location.desiredState.type
+
+- name: Form the location url
+  set_fact:
+    nginx_controller_location_url: >-
+      https://{{ nginx_controller_fqdn }}/{{ nginx_controller_api_version }}/infrastructure/locations/{{ nginx_controller_location.metadata.name }}
+
+- name: create if location is absent, update if present
+  uri:
+    url: "{{ nginx_controller_location_url }}"
+    method: "PUT"
+    body: "{{ nginx_controller_location }}"
+    body_format: json
+    status_code:
+      - 200
+      - 201
+      - 202
+    return_content: yes
+    validate_certs: "{{ nginx_controller_validate_certs | default(false) }}"
+    headers:
+      Cookie: "{{ nginx_controller_auth_token }}"
+  register: nginx_controller_location_current_status
+  until: (nginx_controller_location_current_status is defined) and
+         (not nginx_controller_location_current_status.json.currentStatus.state.selfConfigState.isConfiguring | bool)
+  retries: 50
+  delay: 2
+  failed_when: nginx_controller_location_current_status.json.currentStatus.state.selfConfigState.isError | bool
+  ignore_errors: true
+
+ # above simply errors but does not include the informative failure messages from Controller 
+- name: report failure details from Controller
+  fail:
+    msg: "{{ nginx_controller_location_current_status.json.currentStatus.state.conditions }}"
+  when: nginx_controller_location_current_status.json.currentStatus.state.selfConfigState.isError | bool

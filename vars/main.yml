@@ -1,0 +1,19 @@
+---
+# vars file for ansible-role-nginx_controller_location
+
+# nginx_controller_location:
+#   metadata:
+#     name:  # the short name of the location (alpha numeric characters only)
+#     displayName:   # a friendly display name for the location (spaces and special characters allowed)
+#     description:  # a description of the location
+#     tags:
+#       - tag1
+#       - tag2
+#   desiredState:
+#     type:   # the type of location - OTHER_LOCATION, AWS_LOCATION
+#     region:   # if AWS_Location
+#     vpcID:   # if AWS_Location
+#     integrationRef:   # if AWS_Location, reference to an AWS_Integration (secrets to access AWS API)
+
+# OTHER_LOCATION is a generic location, all instances in this location must be deployed manually or via pipeline.
+# AWS_LOCATION is a location that represents a region and network and images that reside in AWS. There is an option for Controller to manage the deploy, configure, destroy lifecycle of all or some of the NGINX Plus instances. There will be other clouds added.
