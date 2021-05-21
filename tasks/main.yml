@@ -31,4 +31,4 @@
     headers:
       Cookie: "{{ nginx_controller_auth_token }}"
   register: nginx_controller_location_current_status
-  ignore_errors: true
+  # ignore_errors: true
