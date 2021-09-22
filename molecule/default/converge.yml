@@ -1,0 +1,23 @@
+---
+- name: Converge
+  hosts: controllers
+
+  vars:
+    nginx_controller_validate_certs: false
+    nginx_controller_fqdn: mock-server.molecule-test:1080
+    nginx_controller_auth_token: "ABC123"
+    nginx_controller_location:
+      metadata:
+        name: "datacenter1"
+        displayName: "Test Location"
+        description: "The location for testing"
+        tags:
+          - tag1
+          - tag2
+      desiredState:
+        type: OTHER_LOCATION
+
+  tasks:
+    - name: Call Location Role
+      include_role:
+        name: ansible-role-nginx_controller_location
