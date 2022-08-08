@@ -1,6 +1,8 @@
 NGINX Controller Location
 ==========================
 
+#  This repository has been archived. There will likely be no further development on the project and security vulnerabilities may be unaddressed.
+
 Define an environment with NGINX Controller to hold applications (apps), locations, certificates, etc.
 
 Requirements
